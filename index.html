@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 PlantPro Quest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+    
+    <!-- Achievement Toast Container -->
+    <div id="toast-container"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="title">🌱 PlantPro Quest</h1>
+                <p class="subtitle">Turn hardware debugging into epic wins</p>
+            </div>
+            <button class="settings-btn" id="settings-btn" title="Settings">⚙️</button>
+        </header>
+        
+        <!-- Stats Bar -->
+        <section class="stats-bar">
+            <div class="stat-card streak">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-value" id="streak-value">0</div>
+                <div class="stat-label">Day Streak</div>
+            </div>
+            <div class="stat-card xp">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-value" id="xp-value">0</div>
+                <div class="stat-label">XP</div>
+            </div>
+            <div class="stat-card level">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-value" id="level-value">1</div>
+                <div class="stat-label" id="level-name">Seed</div>
+            </div>
+            <div class="stat-card tasks">
+                <div class="stat-icon">🌱</div>
+                <div class="stat-value"><span id="tasks-completed">0</span>/<span id="tasks-total">18</span></div>
+                <div class="stat-label">Tasks</div>
+            </div>
+        </section>
+        
+        <!-- Level Progress -->
+        <section class="level-progress">
+            <div class="level-bar-container">
+                <div class="level-bar-header">
+                    <span>Level Progress</span>
+                    <span id="xp-to-next">200 XP to next level</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="level-progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Overall Progress -->
+        <section class="overall-progress">
+            <div class="section-header">
+                <h2>🎯 Mission Progress</h2>
+                <span class="percentage" id="overall-percentage">0%</span>
+            </div>
+            <div class="progress-bar large">
+                <div class="progress-fill" id="overall-progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="progress-marks">
+                <span class="mark" data-phase="0">🔬</span>
+                <span class="mark" data-phase="1">🔧</span>
+                <span class="mark" data-phase="2">💻</span>
+            </div>
+        </section>
+        
+        <!-- Phases Container -->
+        <section class="phases-container" id="phases-container">
+            <!-- Phases will be rendered here by JavaScript -->
+        </section>
+        
+        <!-- Achievements Section -->
+        <section class="achievements-section">
+            <h2 class="section-title">🏅 Achievements</h2>
+            <div class="achievements-grid" id="achievements-grid">
+                <!-- Achievements rendered by JS -->
+            </div>
+        </section>
+        
+        <!-- Recent Activity -->
+        <section class="activity-section">
+            <h2 class="section-title">📊 Recent Activity</h2>
+            <div class="activity-list" id="activity-list">
+                <div class="activity-empty">Complete your first task to see activity!</div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>💾 Auto-saves to browser • <a href="#" id="export-data">Export Data</a> • <a href="#" id="reset-data">Reset Progress</a></p>
+        </footer>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="close-btn" id="close-settings">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="sound-enabled">
+                        <span>Sound Effects</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="confetti-enabled" checked>
+                        <span>Confetti Celebrations</span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="recovery-kitchen-sync">
+                        <span>Sync to Recovery Kitchen</span>
+                    </label>
+                    <p class="setting-desc">Log completed tasks as Main Course entries</p>
+                </div>
+                <div class="setting-item">
+                    <label>Theme</label>
+                    <select id="theme-select">
+                        <option value="dark">🌙 Dark (Default)</option>
+                        <option value="oled">⚫ OLED Black</option>
+                        <option value="forest">🌲 Forest Green</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Achievement Unlock Modal -->
+    <div class="modal achievement-modal" id="achievement-modal">
+        <div class="modal-content achievement-content">
+            <div class="achievement-unlock-animation">
+                <div class="achievement-icon" id="achievement-icon">🏆</div>
+                <div class="achievement-rays"></div>
+            </div>
+            <h2 class="achievement-title">Achievement Unlocked!</h2>
+            <p class="achievement-name" id="achievement-name">PlantPro Master</p>
+            <p class="achievement-desc" id="achievement-desc">Complete all tasks</p>
+            <button class="btn-primary" id="achievement-ok">Awesome! 🎉</button>
+        </div>
+    </div>
+
+    <script src="js/confetti.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
