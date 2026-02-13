@@ -1031,6 +1031,198 @@ body {
     50% { transform: scale(1.1); }
 }
 
+/* ===== GITHUB SYNC ===== */
+.github-sync-panel {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+}
+
+.github-sync-panel h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.sync-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #888;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.sync-status.synced {
+    background: rgba(35, 134, 54, 0.15);
+    color: var(--accent-glow);
+}
+.sync-status.synced .status-dot {
+    background: var(--accent-primary);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.sync-status.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #FFC107;
+}
+.sync-status.pending .status-dot {
+    background: #FFC107;
+    animation: pulse 1.5s infinite;
+}
+
+.sync-status.error {
+    background: rgba(248, 81, 73, 0.15);
+    color: var(--streak-color);
+}
+.sync-status.error .status-dot {
+    background: var(--streak-color);
+}
+
+.sync-status.syncing {
+    background: rgba(33, 150, 243, 0.15);
+    color: #2196F3;
+}
+.sync-status.syncing .status-dot {
+    background: #2196F3;
+    animation: pulse 0.8s infinite;
+}
+
+.sync-status.disconnected {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+}
+.sync-status.disconnected .status-dot {
+    background: var(--text-muted);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.token-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.token-section label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.token-section input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+}
+
+.token-section input[type="password"]:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.token-section small {
+    font-size: 0.75rem;
+}
+
+.token-section small a {
+    color: var(--accent-glow);
+    text-decoration: none;
+}
+
+.token-section small a:hover {
+    text-decoration: underline;
+}
+
+.token-section .btn-primary {
+    margin-top: 8px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-glow));
+    box-shadow: 0 4px 16px rgba(35, 134, 54, 0.3);
+}
+
+.token-section .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(35, 134, 54, 0.4);
+}
+
+.connected-section {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+}
+
+.connected-section p {
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: var(--accent-glow);
+}
+
+.sync-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.sync-actions .btn-primary,
+.sync-actions .btn-secondary {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+}
+
+.btn-secondary {
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+    color: var(--text-primary);
+}
+
+.sync-help {
+    margin-top: 12px;
+    padding: 10px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.sync-help code {
+    background: var(--bg-hover);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

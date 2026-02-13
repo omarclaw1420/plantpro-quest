@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Sync Test</title>
+    <style>
+        body { font-family: system-ui, sans-serif; padding: 20px; background: #0d1117; color: #c9d1d9; }
+        .test { padding: 10px; margin: 10px 0; border-radius: 6px; }
+        .pass { background: rgba(35, 134, 54, 0.2); border: 1px solid #238636; }
+        .fail { background: rgba(248, 81, 73, 0.2); border: 1px solid #f85149; }
+        .info { background: rgba(33, 150, 243, 0.2); border: 1px solid #2196f3; }
+        code { background: #21262d; padding: 2px 6px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🌱 PlantPro Quest - GitHub Sync Test</h1>
+    <div id="results"></div>
+    
+    <script src="js/github-sync.js"></script>
+    <script>
+        const results = document.getElementById('results');
+        
+        function test(name, fn) {
+            try {
+                const result = fn();
+                if (result) {
+                    results.innerHTML += `<div class="test pass">✅ ${name}</div>`;
+                    return true;
+                } else {
+                    results.innerHTML += `<div class="test fail">❌ ${name} - returned false</div>`;
+                    return false;
+                }
+            } catch (e) {
+                results.innerHTML += `<div class="test fail">❌ ${name} - ${e.message}</div>`;
+                return false;
+            }
+        }
+        
+        function info(msg) {
+            results.innerHTML += `<div class="test info">ℹ️ ${msg}</div>`;
+        }
+        
+        // Tests
+        info('Testing GitHubSync module...');
+        
+        test('GitHubSync exists', () => typeof GitHubSync !== 'undefined');
+        test('GitHubSync has init method', () => typeof GitHubSync.init === 'function');
+        test('GitHubSync has isConfigured method', () => typeof GitHubSync.isConfigured === 'function');
+        test('GitHubSync has getToken method', () => typeof GitHubSync.getToken === 'function');
+        test('GitHubSync has setToken method', () => typeof GitHubSync.setToken === 'function');
+        test('GitHubSync has clearToken method', () => typeof GitHubSync.clearToken === 'function');
+        test('GitHubSync has fetchProgress method', () => typeof GitHubSync.fetchProgress === 'function');
+        test('GitHubSync has saveProgress method', () => typeof GitHubSync.saveProgress === 'function');
+        test('GitHubSync has getStatus method', () => typeof GitHubSync.getStatus === 'function');
+        test('GitHubSync has markPending method', () => typeof GitHubSync.markPending === 'function');
+        test('GitHubSync has markSynced method', () => typeof GitHubSync.markSynced === 'function');
+        test('GitHubSync has STATUS constants', () => typeof GitHubSync.STATUS !== 'undefined');
+        
+        // Test status states
+        const status = GitHubSync.getStatus();
+        info(`Current status: ${JSON.stringify(status)}`);
+        
+        test('Status has state property', () => 'state' in status);
+        test('Status has hasToken property', () => 'hasToken' in status);
+        test('Initially not configured', () => !GitHubSync.isConfigured());
+        
+        // Test token management
+        GitHubSync.setToken('test-token-123');
+        test('Token was set', () => GitHubSync.isConfigured());
+        test('Token can be retrieved', () => GitHubSync.getToken() === 'test-token-123');
+        
+        GitHubSync.clearToken();
+        test('Token was cleared', () => !GitHubSync.isConfigured());
+        
+        info('All basic tests complete!');
+        info('<strong>To test full sync:</strong>');
+        info('1. Open PlantPro Quest with <code>?token=ghp_YOUR_TOKEN</code>');
+        info('2. Check a task - should save to GitHub');
+        info('3. Refresh page - progress should persist');
+        info('4. Check sync status indicator in Settings');
+    </script>
+</body>
+</html>

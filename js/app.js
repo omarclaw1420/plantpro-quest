@@ -6,7 +6,10 @@
 const App = {
     data: null,
     
-    init() {
+    async init() {
+        // Initialize Storage (includes GitHub sync setup)
+        await Storage.init();
+        
         // Load data
         this.data = Storage.load();
         
@@ -224,12 +227,18 @@ const App = {
 
         document.getElementById('reset-data').addEventListener('click', (e) => {
             e.preventDefault();
-            if (Storage.reset()) {
-                this.data = Storage.load();
-                this.render();
-                this.showToast('🔄 Progress reset!', 'success');
-            }
+            Storage.reset().then(didReset => {
+                if (didReset) {
+                    this.data = Storage.load();
+                    this.render();
+                    this.showToast('🔄 Progress reset!', 'success');
+                    this.updateSyncUI();
+                }
+            });
         });
+
+        // GitHub Sync Events
+        this.bindGitHubSyncEvents();
 
         // Close modal on backdrop click
         document.querySelectorAll('.modal').forEach(modal => {
@@ -239,6 +248,115 @@ const App = {
                 }
             });
         });
+    },
+
+    bindGitHubSyncEvents() {
+        const saveTokenBtn = document.getElementById('save-token-btn');
+        const syncNowBtn = document.getElementById('sync-now-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const tokenInput = document.getElementById('github-token');
+
+        if (saveTokenBtn) {
+            saveTokenBtn.addEventListener('click', async () => {
+                const token = tokenInput.value.trim();
+                if (token) {
+                    GitHubSync.setToken(token);
+                    saveTokenBtn.disabled = true;
+                    saveTokenBtn.textContent = 'Connecting...';
+                    
+                    try {
+                        await Storage.syncNow();
+                        this.data = Storage.load();
+                        this.render();
+                        this.updateSyncUI();
+                        this.showToast('☁️ Connected to GitHub!', 'success');
+                        tokenInput.value = '';
+                    } catch (err) {
+                        this.showToast('❌ Connection failed: ' + err.message, 'error');
+                        GitHubSync.clearToken();
+                    } finally {
+                        saveTokenBtn.disabled = false;
+                        saveTokenBtn.textContent = 'Connect';
+                    }
+                }
+            });
+        }
+
+        if (syncNowBtn) {
+            syncNowBtn.addEventListener('click', async () => {
+                syncNowBtn.disabled = true;
+                syncNowBtn.textContent = 'Syncing...';
+                
+                try {
+                    const result = await Storage.syncNow();
+                    if (result.action === 'pulled') {
+                        this.data = result.data;
+                        this.render();
+                        this.showToast('☁️ Downloaded from cloud', 'success');
+                    } else {
+                        this.showToast('☁️ Sync complete!', 'success');
+                    }
+                    this.updateSyncUI();
+                } catch (err) {
+                    this.showToast('❌ Sync failed: ' + err.message, 'error');
+                } finally {
+                    syncNowBtn.disabled = false;
+                    syncNowBtn.textContent = 'Sync Now';
+                }
+            });
+        }
+
+        if (disconnectBtn) {
+            disconnectBtn.addEventListener('click', () => {
+                GitHubSync.clearToken();
+                this.updateSyncUI();
+                this.showToast('Disconnected from GitHub', 'success');
+            });
+        }
+
+        // Poll for status updates every 5 seconds
+        setInterval(() => this.updateSyncUI(), 5000);
+    },
+
+    updateSyncUI() {
+        const status = GitHubSync.getStatus();
+        const indicator = document.getElementById('sync-status-indicator');
+        const tokenSection = document.getElementById('token-input-section');
+        const connectedSection = document.getElementById('connected-section');
+
+        if (!indicator) return;
+
+        // Update status indicator class
+        indicator.className = 'sync-status ' + status.state;
+
+        // Update status text
+        const statusText = indicator.querySelector('.status-text');
+        const statusMessages = {
+            disconnected: 'Disconnected',
+            synced: `Synced (${this.formatTime(status.lastSyncTime)})`,
+            pending: 'Changes pending...',
+            syncing: 'Syncing...',
+            error: status.lastError ? 'Error: ' + status.lastError.slice(0, 30) : 'Sync error'
+        };
+        statusText.textContent = statusMessages[status.state] || 'Unknown';
+
+        // Toggle sections
+        if (status.hasToken) {
+            tokenSection?.classList.add('hidden');
+            connectedSection?.classList.remove('hidden');
+        } else {
+            tokenSection?.classList.remove('hidden');
+            connectedSection?.classList.add('hidden');
+        }
+    },
+
+    formatTime(timestamp) {
+        if (!timestamp) return 'never';
+        const seconds = Math.floor((Date.now() - timestamp) / 1000);
+        if (seconds < 60) return 'just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        return `${Math.floor(seconds / 86400)}d ago`;
     },
 
     completeTask(taskElement, taskId) {
@@ -297,6 +415,9 @@ const App = {
         if (task) {
             Storage.syncToRecoveryKitchen(task);
         }
+
+        // Update sync UI (may show pending status)
+        this.updateSyncUI();
     },
 
     findTask(taskId) {
@@ -360,6 +481,9 @@ const App = {
         document.getElementById('recovery-kitchen-sync').checked = settings.recoveryKitchenSync;
         document.getElementById('theme-select').value = settings.theme;
 
+        // Update sync UI
+        this.updateSyncUI();
+
         // Bind setting changes
         document.getElementById('sound-enabled').onchange = (e) => {
             this.data.settings.soundEnabled = e.target.checked;
@@ -413,6 +537,21 @@ const App = {
     }
 };
 
+// UI helper object for Storage callbacks
+const UI = {
+    updateSyncStatus() {
+        if (typeof App !== 'undefined' && App.updateSyncUI) {
+            App.updateSyncUI();
+        }
+    },
+    
+    showToast(message, type = 'success') {
+        if (typeof App !== 'undefined' && App.showToast) {
+            App.showToast(message, type);
+        }
+    }
+};
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     App.init();
@@ -420,5 +559,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = App;
+    module.exports = { App, UI };
 }

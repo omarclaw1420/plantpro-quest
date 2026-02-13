@@ -142,6 +142,39 @@
                         <option value="forest">🌲 Forest Green</option>
                     </select>
                 </div>
+                
+                <!-- GitHub Sync Panel -->
+                <div class="github-sync-panel">
+                    <h3>☁️ Cloud Sync</h3>
+                    
+                    <div id="sync-status-indicator" class="sync-status disconnected">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Disconnected</span>
+                    </div>
+                    
+                    <div id="token-input-section" class="token-section">
+                        <label for="github-token">GitHub Personal Access Token:</label>
+                        <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxx" />
+                        <small>
+                            <a href="https://github.com/settings/tokens/new?scopes=repo&description=PlantPro%20Quest%20Sync" target="_blank">
+                                Create token with 'repo' scope →
+                            </a>
+                        </small>
+                        <button id="save-token-btn" class="btn-primary">Connect</button>
+                    </div>
+                    
+                    <div id="connected-section" class="connected-section hidden">
+                        <p>✅ Connected to GitHub</p>
+                        <div class="sync-actions">
+                            <button id="sync-now-btn" class="btn-primary">Sync Now</button>
+                            <button id="disconnect-btn" class="btn-secondary">Disconnect</button>
+                        </div>
+                    </div>
+                    
+                    <div class="sync-help">
+                        <p><strong>Quick connect:</strong> Use URL <code>?token=YOUR_TOKEN</code></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -161,6 +194,7 @@
     </div>
 
     <script src="js/confetti.js"></script>
+    <script src="js/github-sync.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/game.js"></script>
     <script src="js/app.js"></script>
