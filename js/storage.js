@@ -498,21 +498,88 @@ const Storage = {
     // Uncomplete a task (for undo)
     uncompleteTask(taskId) {
         const data = this.load();
+        let task = null;
+        let phase = null;
         
         for (const p of data.phases) {
             const t = p.tasks.find(t => t.id === taskId);
             if (t) {
-                t.completed = false;
-                t.completedAt = null;
+                task = t;
+                phase = p;
                 break;
             }
+        }
+
+        if (!task || !task.completed) return null;
+
+        // Check if phase was completed before uncompleting
+        const wasPhaseComplete = phase.tasks.every(t => t.completed);
+        const wasAllComplete = data.phases.every(p => p.tasks.every(t => t.completed));
+
+        // Mark incomplete
+        task.completed = false;
+        task.completedAt = null;
+
+        // Calculate XP that was earned (with streak bonus at time of completion)
+        const historyEntry = data.history.find(h => h.taskId === taskId);
+        const xpEarned = historyEntry ? historyEntry.xpEarned : task.xp;
+
+        // Retract XP
+        data.player.xp = Math.max(0, data.player.xp - xpEarned);
+
+        // If phase was complete and now isn't, retract phase bonus
+        const isPhaseNowComplete = phase.tasks.every(t => t.completed);
+        if (wasPhaseComplete && !isPhaseNowComplete) {
+            data.player.xp = Math.max(0, data.player.xp - 100);
+        }
+
+        // If all was complete and now isn't, retract all-complete bonus
+        const isAllNowComplete = data.phases.every(p => p.tasks.every(t => t.completed));
+        if (wasAllComplete && !isAllNowComplete && data.player.allCompleteBonus) {
+            data.player.xp = Math.max(0, data.player.xp - 500);
+            data.player.allCompleteBonus = false;
         }
 
         // Remove from history
         data.history = data.history.filter(h => h.taskId !== taskId);
 
+        // Recalculate achievements based on current state
+        const currentAchievements = [...data.player.achievements];
+        data.player.achievements = []; // Clear and recalculate
+        
+        // Check which achievements should still be unlocked
+        const tasksCompleted = data.phases.flatMap(p => p.tasks).filter(t => t.completed).length;
+        const phasesCompleted = data.phases.filter(p => p.tasks.every(t => t.completed)).length;
+        
+        if (tasksCompleted >= 1) data.player.achievements.push('first-steps');
+        if (data.phases[0]?.tasks.every(t => t.completed)) data.player.achievements.push('lab-rat');
+        if (data.phases[1]?.tasks.every(t => t.completed)) data.player.achievements.push('builder');
+        if (data.phases[2]?.tasks.every(t => t.completed)) data.player.achievements.push('coder');
+        if (data.player.streak >= 3) data.player.achievements.push('on-fire');
+        if (data.player.streak >= 7) data.player.achievements.push('unstoppable');
+        if (phasesCompleted === 3) data.player.achievements.push('plantpro-master');
+        
+        // Find lost achievements for notification
+        const lostAchievements = currentAchievements.filter(a => !data.player.achievements.includes(a));
+
+        // Add uncompletion to history for activity feed
+        data.history.unshift({
+            date: new Date().toISOString(),
+            taskId: task.id,
+            taskName: task.name,
+            xpEarned: -xpEarned, // Negative to show retraction
+            phaseId: phase.id,
+            action: 'uncompleted'
+        });
+
         this.save(data);
-        return data;
+
+        return {
+            data,
+            xpRetracted: xpEarned,
+            lostAchievements,
+            phaseWasUncompleted: wasPhaseComplete && !isPhaseNowComplete
+        };
     },
 
     // Recovery Kitchen Integration

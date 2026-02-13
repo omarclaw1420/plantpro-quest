@@ -165,14 +165,20 @@ const App = {
                 hour12: true 
             });
             
+            const isUncomplete = item.action === 'uncompleted';
+            const xpAmount = item.xpEarned || 0;
+            const xpClass = xpAmount < 0 ? 'negative' : 'positive';
+            const icon = isUncomplete ? '↩️' : '✅';
+            const actionText = isUncomplete ? 'Unchecked' : 'Completed';
+            
             return `
-                <div class="activity-item">
-                    <div class="activity-icon">✅</div>
+                <div class="activity-item ${isUncomplete ? 'uncompleted' : ''}">
+                    <div class="activity-icon">${icon}</div>
                     <div class="activity-content">
-                        <div class="activity-text">Completed task ${item.taskId}</div>
+                        <div class="activity-text">${actionText} task ${item.taskId}</div>
                         <div class="activity-time">${timeStr}</div>
                     </div>
-                    <div class="activity-xp">+${item.xpEarned} XP</div>
+                    <div class="activity-xp ${xpClass}">${xpAmount > 0 ? '+' : ''}${xpAmount} XP</div>
                 </div>
             `;
         }).join('');
@@ -196,8 +202,23 @@ const App = {
             const taskId = taskItem.dataset.taskId;
             if (taskItem.classList.contains('completed')) {
                 // Uncheck
-                this.data = Storage.uncompleteTask(taskId);
-                this.render();
+                const result = Storage.uncompleteTask(taskId);
+                if (result) {
+                    this.data = result.data;
+                    
+                    // Show XP retraction animation
+                    const rect = taskItem.getBoundingClientRect();
+                    const x = rect.left + rect.width / 2;
+                    const y = rect.top + rect.height / 2;
+                    this.showXPFloat(x, y, -result.xpRetracted);
+                    
+                    // Show toast for phase uncompletion
+                    if (result.phaseWasUncompleted) {
+                        this.showToast('↩️ Phase incomplete. -100 XP retracted', 'warning');
+                    }
+                    
+                    this.render();
+                }
             } else {
                 // Check
                 this.completeTask(taskItem, taskId);
@@ -236,6 +257,22 @@ const App = {
                 }
             });
         });
+
+        // Reset All Progress button in Settings
+        const resetAllBtn = document.getElementById('reset-all-btn');
+        if (resetAllBtn) {
+            resetAllBtn.addEventListener('click', () => {
+                Storage.reset().then(didReset => {
+                    if (didReset) {
+                        this.data = Storage.load();
+                        this.render();
+                        this.closeSettings();
+                        this.showToast('🔄 All progress reset! Starting fresh.', 'success');
+                        this.updateSyncUI();
+                    }
+                });
+            });
+        }
 
         // GitHub Sync Events
         this.bindGitHubSyncEvents();

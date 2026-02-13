@@ -1231,3 +1231,71 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* ===== RESET PANEL ===== */
+.reset-panel {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid var(--border);
+}
+
+.reset-panel h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--streak-color);
+}
+
+.reset-warning {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+/* ===== DANGER BUTTON ===== */
+.btn-danger {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 12px 24px;
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+    width: 100%;
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
+
+/* ===== ACTIVITY UNCOMPLETED STYLES ===== */
+.activity-item.uncompleted {
+    background: rgba(248, 81, 73, 0.05);
+}
+
+.activity-item.uncompleted .activity-icon {
+    color: var(--streak-color);
+}
+
+.activity-xp.negative {
+    color: var(--streak-color);
+}
+
+.activity-xp.positive {
+    color: var(--xp-color);
+}
+
+/* Warning toast style */
+.toast.warning {
+    border-left: 4px solid var(--streak-color);
+    background: linear-gradient(90deg, rgba(248, 81, 73, 0.1), var(--bg-secondary));
+}
