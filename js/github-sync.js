@@ -11,6 +11,16 @@ const GitHubSync = (() => {
     apiBase: 'https://api.github.com/repos'
   };
 
+  // Unicode-safe base64 encoding functions
+  // btoa/atob only handle Latin1, so we need these for Unicode (emojis, Arabic, etc.)
+  function utf8_to_b64(str) {
+    return window.btoa(unescape(encodeURIComponent(str)));
+  }
+
+  function b64_to_utf8(str) {
+    return decodeURIComponent(escape(window.atob(str)));
+  }
+
   // Private state
   let _token = null;
   let _isSyncing = false;
@@ -115,7 +125,7 @@ const GitHubSync = (() => {
     }
 
     const data = await response.json();
-    const content = atob(data.content); // Base64 decode
+    const content = b64_to_utf8(data.content); // Base64 decode with Unicode support
     const progress = JSON.parse(content);
 
     return {
@@ -145,7 +155,7 @@ const GitHubSync = (() => {
 
     const body = {
       message: `Update progress: ${new Date().toISOString()}`,
-      content: btoa(JSON.stringify(payload, null, 2)),
+      content: utf8_to_b64(JSON.stringify(payload, null, 2)),
       branch: CONFIG.branch
     };
 
