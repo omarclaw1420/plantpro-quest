@@ -1,11 +1,9 @@
 {
   "player": {
-    "xp": 206,
-    "streak": 1,
-    "lastActive": "2026-02-13T07:17:34.985Z",
-    "achievements": [
-      "first-steps"
-    ],
+    "xp": 0,
+    "streak": 0,
+    "lastActive": null,
+    "achievements": [],
     "allCompleteBonus": false
   },
   "phases": [
@@ -159,15 +157,15 @@
   ],
   "history": [],
   "settings": {
-    "soundEnabled": true,
+    "soundEnabled": false,
     "confettiEnabled": true,
     "recoveryKitchenSync": false,
     "githubSync": false,
     "theme": "dark"
   },
-  "_localTimestamp": 1770969042358,
+  "_localTimestamp": 1770969503865,
   "_meta": {
-    "lastModified": 1770969491138,
+    "lastModified": 1770969503865,
     "device": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/29.0 Chrome",
     "version": "1.0"
   }
