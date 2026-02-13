@@ -1,6 +1,6 @@
 {
   "player": {
-    "xp": 50,
+    "xp": 52,
     "streak": 1,
     "lastActive": "2026-02-13T08:43:07.592Z",
     "achievements": [
@@ -33,7 +33,7 @@
           "name": "(Optional) Build water detection/testing unit",
           "completed": true,
           "xp": 50,
-          "completedAt": "2026-02-13T08:43:07.589Z"
+          "completedAt": "2026-02-13T08:43:18.925Z"
         }
       ]
     },
@@ -159,11 +159,19 @@
   ],
   "history": [
     {
-      "date": "2026-02-13T08:43:07.592Z",
+      "date": "2026-02-13T08:43:18.925Z",
       "taskId": "0.3",
       "taskName": "(Optional) Build water detection/testing unit",
-      "xpEarned": 50,
+      "xpEarned": 52,
       "phaseId": "p0"
+    },
+    {
+      "date": "2026-02-13T08:43:16.699Z",
+      "taskId": "0.3",
+      "taskName": "(Optional) Build water detection/testing unit",
+      "xpEarned": -52,
+      "phaseId": "p0",
+      "action": "uncompleted"
     }
   ],
   "settings": {
@@ -173,9 +181,9 @@
     "githubSync": false,
     "theme": "dark"
   },
-  "_localTimestamp": 1770972187595,
+  "_localTimestamp": 1770972198925,
   "_meta": {
-    "lastModified": 1770972190602,
+    "lastModified": 1770972201926,
     "device": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/29.0 Chrome",
     "version": "1.0"
   }
