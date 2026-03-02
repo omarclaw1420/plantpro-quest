@@ -1,7 +1,7 @@
 {
   "player": {
     "xp": 0,
-    "streak": 1,
+    "streak": 0,
     "lastActive": "2026-02-13T08:43:07.592Z",
     "achievements": [],
     "allCompleteBonus": false
@@ -172,9 +172,9 @@
     "githubSync": false,
     "theme": "dark"
   },
-  "_localTimestamp": 1770972224217,
+  "_localTimestamp": 1772455344423,
   "_meta": {
-    "lastModified": 1770972227219,
+    "lastModified": 1772455347424,
     "device": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/29.0 Chrome",
     "version": "1.0"
   }
