@@ -1,7 +1,7 @@
 {
   "player": {
     "xp": 50,
-    "streak": 1,
+    "streak": 0,
     "lastActive": "2026-03-02T12:42:31.336Z",
     "achievements": [
       "first-steps"
@@ -181,9 +181,9 @@
     "githubSync": false,
     "theme": "dark"
   },
-  "_localTimestamp": 1772455351336,
+  "_localTimestamp": 1772605406396,
   "_meta": {
-    "lastModified": 1772455354337,
+    "lastModified": 1772605409397,
     "device": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/29.0 Chrome",
     "version": "1.0"
   }
