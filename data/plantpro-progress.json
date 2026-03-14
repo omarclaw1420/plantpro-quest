@@ -1,6 +1,6 @@
 {
   "player": {
-    "xp": 150,
+    "xp": 202,
     "streak": 1,
     "lastActive": "2026-03-14T12:07:11.170Z",
     "achievements": [
@@ -59,9 +59,9 @@
         {
           "id": "1.1.2",
           "name": "Fill with water, test with battery",
-          "completed": false,
+          "completed": true,
           "xp": 50,
-          "completedAt": null
+          "completedAt": "2026-03-14T12:07:16.284Z"
         },
         {
           "id": "1.2.1",
@@ -159,6 +159,13 @@
   ],
   "history": [
     {
+      "date": "2026-03-14T12:07:16.284Z",
+      "taskId": "1.1.2",
+      "taskName": "Fill with water, test with battery",
+      "xpEarned": 52,
+      "phaseId": "p1"
+    },
+    {
       "date": "2026-03-14T12:07:11.170Z",
       "taskId": "1.1.1",
       "taskName": "Cut wires & reverse pump polarity",
@@ -195,9 +202,9 @@
     "githubSync": false,
     "theme": "dark"
   },
-  "_localTimestamp": 1773490031170,
+  "_localTimestamp": 1773490036284,
   "_meta": {
-    "lastModified": 1773490034171,
+    "lastModified": 1773490039287,
     "device": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/29.0 Chrome",
     "version": "1.0"
   }
